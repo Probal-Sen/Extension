@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API-VEDA</title>
+    <style>
+        body {
+            width: 400px;
+            min-height: 300px;
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .status {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .patient-list {
+            max-height: 200px;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        
+        .patient-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .patient-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .patient-details {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .diagnosis-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 2px 0;
+        }
+        
+        .status-normal { color: #2ecc71; }
+        .status-warning { color: #f39c12; }
+        .status-critical { color: #e74c3c; }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .error {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        
+        .api-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .api-section h3 {
+            margin: 0 0 10px 0;
+            color: #3498db;
+            font-size: 1rem;
+        }
+        
+        .search-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 14px;
+        }
+        
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #3498db;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .search-results {
+            max-height: 150px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        .search-result-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px;
+            margin-bottom: 6px;
+            border-radius: 4px;
+            border-left: 3px solid #3498db;
+        }
+        
+        .search-result-title {
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 4px;
+        }
+        
+        .search-result-details {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="icon.png" alt="API-VEDA" style="width: 24px; height: 24px; margin-right: 8px; vertical-align: middle;">
+        <h1>API-VEDA</h1>
+    </div>
+    
+    <div class="status" id="status">
+        Checking dashboard connection...
+    </div>
+    
+    <button class="btn" id="refreshBtn">🔄 Refresh Patient Data</button>
+    <button class="btn" id="exportBtn">📊 Export All Data</button>
+    <button class="btn" id="clearBtn">🗑️ Clear All Data</button>
+    
+    <div class="api-section">
+        <h3>🔍 API-VEDA Search</h3>
+        <div class="search-container">
+            <input type="text" id="searchTerm" placeholder="Enter traditional term..." class="search-input">
+            <button class="btn" id="searchBtn">🔍 Search ICD-11</button>
+        </div>
+        <div class="api-actions">
+            <button class="btn" id="healthBtn" style="font-size: 12px; padding: 6px 12px;">🏥 Check API Health</button>
+        </div>
+        <div id="searchResults" class="search-results"></div>
+    </div>
+    
+    <div class="patient-list" id="patientList">
+        <div class="loading">Loading patient data...</div>
+    </div>
+    
+    <script src="popup.js"></script>
+</body>
+</html>

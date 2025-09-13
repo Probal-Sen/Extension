@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "name": "API-VEDA",
+  "version": "1.0.0",
+  "description": "Access authenticated patient data from API-VEDA",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "file:///*",
+    "http://localhost:8000/*",
+    "http://127.0.0.1:5500/*",
+    "https://your-hospital-dashboard.com/*",
+    "https://api-veda-kjax.onrender.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "file:///*",
+        "http://localhost:8000/*",
+        "http://127.0.0.1:5500/*",
+        "https://your-hospital-dashboard.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "API-VEDA"
+  },
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  }
+}

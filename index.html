@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <h1><i class="fas fa-hospital"></i> Hospital Dashboard</h1>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="refreshData()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearStorage()">
+                        <i class="fas fa-trash"></i> Clear Storage
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Patient Grid -->
+        <main class="dashboard-main">
+            <div class="patients-grid" id="patientsGrid">
+                <!-- Patient cards will be dynamically generated here -->
+            </div>
+        </main>
+
+        <!-- Authentication Modal -->
+        <div id="authModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2><i class="fas fa-shield-alt"></i> Patient Authentication</h2>
+                    <span class="close" onclick="closeAuthModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="patient-info" id="selectedPatientInfo">
+                        <!-- Selected patient info will be displayed here -->
+                    </div>
+                    <form id="authForm" onsubmit="authenticatePatient(event)">
+                        <div class="form-group">
+                            <label for="abhaId">Enter ABHA ID:</label>
+                            <input type="text" id="abhaId" name="abhaId" placeholder="ABHA1234567890" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="closeAuthModal()">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Authenticate</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Modal -->
+        <div id="successModal" class="modal">
+            <div class="modal-content success-modal">
+                <div class="modal-header">
+                    <h2><i class="fas fa-check-circle"></i> Authentication Successful</h2>
+                </div>
+                <div class="modal-body">
+                    <p>Patient authenticated successfully! Token has been stored in localStorage.</p>
+                    <div class="token-info">
+                        <strong>Token:</strong> <span id="storedToken"></span>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn btn-secondary" onclick="closeSuccessModal()">Close</button>
+                        <button class="btn btn-primary" onclick="openPatientDetailScreen()">View Patient Details</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Patient Detail Screen -->
+        <div id="patientDetailScreen" class="patient-detail-screen">
+            <div class="patient-detail-header">
+                <button class="back-btn" onclick="closePatientDetailScreen()">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </button>
+                <h2><i class="fas fa-user-md"></i> Patient Medical Record</h2>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="exportPatientData()">
+                        <i class="fas fa-download"></i> Export CSV
+                    </button>
+                    <button class="btn btn-primary" onclick="refreshDiagnosis()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+            </div>
+            
+            <div class="patient-detail-content">
+                <!-- Patient Info Section -->
+                <div class="patient-info-section">
+                    <h3><i class="fas fa-user"></i> Patient Information</h3>
+                    <div class="patient-info-grid" id="patientInfoGrid">
+                        <!-- Patient info will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Medical Diagnosis Section -->
+                <div class="diagnosis-section">
+                    <h3><i class="fas fa-stethoscope"></i> Medical Diagnosis</h3>
+                    <div class="diagnosis-grid" id="diagnosisGrid">
+                        <!-- Diagnosis data will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Token Information -->
+                <div class="token-section">
+                    <h3><i class="fas fa-key"></i> Authentication Token</h3>
+                    <div class="token-display" id="tokenDisplay">
+                        <!-- Token will be displayed here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
