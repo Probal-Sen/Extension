@@ -491,7 +491,7 @@ function formatSearchResult(result) {
 }
 
 // Individual endpoint functions
-
+/*
 // 1. GET /api/search?q={term}&system={system} - Most comprehensive search
 async function searchWithAPI(term, system = 'icd11') {
     try {
@@ -598,4 +598,87 @@ async function generateFHIRReport(patientData) {
         console.error('FHIR report generation error:', error);
         throw error;
     }
+}*/
+// ✅ Corrected API endpoint functions for NAMASTE to ICD-11 Mapping API
+const API_BASE_URL = 'https://api-veda-kjax.onrender.com';
+
+// 1. GET /api/search?q={term}&system={system} - API search endpoint with multiple parameter options
+async function searchWithAPI(term, system = 'icd11') {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/search?q=${encodeURIComponent(term)}&system=${system}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        return { data: await response.json(), endpoint: 'API Search' };
+    } catch (error) {
+        console.error('API search error:', error);
+        throw error;
+    }
 }
+
+// 2. GET /search?q={term}&system={system} - Search using query parameters
+async function searchWithQuery(term, system = 'icd11') {
+    try {
+        const response = await fetch(`${API_BASE_URL}/search?q=${encodeURIComponent(term)}&system=${system}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        return { data: await response.json(), endpoint: 'Query Search' };
+    } catch (error) {
+        console.error('Query search error:', error);
+        throw error;
+    }
+}
+
+// 3. GET /search/{term} - Path parameter search for partial matches
+async function searchWithPath(term) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/search/${encodeURIComponent(term)}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        return { data: await response.json(), endpoint: 'Path Search' };
+    } catch (error) {
+        console.error('Path search error:', error);
+        throw error;
+    }
+}
+
+// 4. POST /lookup - Look up a traditional term to get ICD-11 mapping (exact match)
+async function lookupTerm(term) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/lookup`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ term })
+        });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        return { data: await response.json(), endpoint: 'Lookup' };
+    } catch (error) {
+        console.error('Lookup error:', error);
+        throw error;
+    }
+}
+
+// 5. GET /health - Health check endpoint
+async function checkAPIHealth() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/health`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        return await response.json();
+    } catch (error) {
+        console.error('Health check error:', error);
+        throw error;
+    }
+}
+
+// 6. POST /generate-fhir-report - Generate a FHIR R4 report
+async function generateFHIRReport(patientData) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/generate-fhir-report`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(patientData)
+        });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        return await response.json();
+    } catch (error) {
+        console.error('FHIR report generation error:', error);
+        throw error;
+    }
+}
+
